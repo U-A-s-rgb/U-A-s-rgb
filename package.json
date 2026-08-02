@@ -1,0 +1,15 @@
+{
+  "name": "mc-cmd-fixer",
+  "version": "1.0.0",
+  "description": "我的世界网易版指令纠错神器 - 带登录注册与管理员后台",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3"
+  }
+}

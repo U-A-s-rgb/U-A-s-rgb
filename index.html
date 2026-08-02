@@ -6,18 +6,134 @@
     <title>我的世界网易版指令纠错神器</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- ============ 登录/注册遮罩 ============ -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-modal">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">登录</button>
+                <button class="auth-tab" data-tab="register">注册</button>
+                <button class="auth-tab admin-tab" data-tab="admin">管理员</button>
+            </div>
+
+            <!-- 登录 -->
+            <form id="loginForm" class="auth-form active">
+                <div class="auth-logo">
+                    <span class="logo-cube">⬛</span>
+                    <span>指令纠错神器</span>
+                </div>
+                <p class="auth-slogan">登录后解锁完整功能</p>
+                <div class="form-row">
+                    <label>用户名</label>
+                    <input type="text" name="username" autocomplete="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-row">
+                    <label>密码</label>
+                    <input type="password" name="password" autocomplete="current-password" placeholder="请输入密码" required>
+                </div>
+                <div id="loginError" class="form-error"></div>
+                <button type="submit" class="btn btn-primary btn-block">登 录</button>
+                <p class="auth-hint">还没有账号？<a href="#" data-goto="register">立即注册</a></p>
+            </form>
+
+            <!-- 注册 -->
+            <form id="registerForm" class="auth-form">
+                <div class="auth-logo">
+                    <span class="logo-cube">⬛</span>
+                    <span>创建新账号</span>
+                </div>
+                <p class="auth-slogan">注册后可使用指令纠错与生成</p>
+                <div class="form-row">
+                    <label>用户名 <small>(2-32位，中英文数字下划线)</small></label>
+                    <input type="text" name="username" placeholder="给自己取个名字" required minlength="2" maxlength="32">
+                </div>
+                <div class="form-row">
+                    <label>密码 <small>(至少6位)</small></label>
+                    <input type="password" name="password" placeholder="设置你的密码" required minlength="6" maxlength="64">
+                </div>
+                <div class="form-row">
+                    <label>确认密码</label>
+                    <input type="password" name="password2" placeholder="再次输入密码" required>
+                </div>
+                <div id="registerError" class="form-error"></div>
+                <button type="submit" class="btn btn-primary btn-block">注 册</button>
+                <p class="auth-hint">已有账号？<a href="#" data-goto="login">直接登录</a></p>
+            </form>
+
+            <!-- 管理员 -->
+            <form id="adminForm" class="auth-form">
+                <div class="auth-logo admin">
+                    <span class="admin-icon">🛡️</span>
+                    <span>管理员入口</span>
+                </div>
+                <p class="auth-slogan">仅限授权管理员使用</p>
+                <div class="form-row">
+                    <label>管理员密码</label>
+                    <input type="password" name="adminPassword" placeholder="请输入管理员密码" required>
+                </div>
+                <div id="adminError" class="form-error"></div>
+                <button type="submit" class="btn btn-primary btn-block admin-btn">进入管理后台</button>
+                <p class="auth-hint">该操作会被记录</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ 管理员面板 ============ -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-inner">
+            <div class="admin-head">
+                <h2>🛡️ 管理员后台</h2>
+                <div class="admin-actions">
+                    <button id="adminRefresh" class="btn btn-ghost btn-sm">刷新</button>
+                    <button id="adminClose" class="btn btn-ghost btn-sm">关闭</button>
+                </div>
+            </div>
+
+            <div class="admin-stats" id="adminStats">
+                <div class="stat-card"><div class="stat-num" id="statUsers">-</div><div class="stat-label">注册用户</div></div>
+                <div class="stat-card"><div class="stat-num" id="statLogins">-</div><div class="stat-label">登录次数</div></div>
+                <div class="stat-card"><div class="stat-num" id="statCmds">-</div><div class="stat-label">指令校验</div></div>
+                <div class="stat-card"><div class="stat-num" id="statBanned">-</div><div class="stat-label">封禁用户</div></div>
+            </div>
+
+            <div class="admin-section">
+                <h3>用户列表</h3>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>用户名</th><th>角色</th><th>注册时间</th><th>最近登录</th><th>状态</th><th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUserList"><tr><td colspan="7" class="loading">加载中…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ 主体 ============ -->
     <header class="topbar">
         <div class="logo">
             <span class="logo-cube">⬛</span>
             <h1>指令纠错神器</h1>
-            <span class="logo-sub">我的世界 网易版 · 基岩版语法</span>
+            <span class="logo-sub">网易版 · 基岩版语法</span>
         </div>
         <div class="header-actions">
+            <div id="userBar" class="user-bar hidden">
+                <span class="user-info">
+                    <span class="user-avatar" id="userAvatar">U</span>
+                    <span id="userName">用户</span>
+                    <span id="userBadge" class="user-badge"></span>
+                </span>
+                <button id="adminBtn" class="icon-btn hidden" title="管理后台">🛡️</button>
+                <button id="logoutBtn" class="icon-btn" title="退出登录">🚪</button>
+            </div>
+            <button id="loginBtn" class="btn btn-ghost btn-sm">登录</button>
             <button id="themeToggle" class="icon-btn" title="切换主题">🌙</button>
-            <a class="header-link" href="https://mc.163.com/dev/" target="_blank" rel="noopener">网易开发者文档</a>
         </div>
     </header>
 
@@ -38,13 +154,13 @@
             <div class="btn-row">
                 <button id="validateBtn" class="btn btn-primary">🔍 开始纠错</button>
                 <button id="clearBtn" class="btn btn-ghost">清空</button>
-                <label class="switch" title="严格模式：对潜在问题也提示">
+                <label class="switch" title="严格模式">
                     <input type="checkbox" id="strictMode">
                     <span>严格模式</span>
                 </label>
             </div>
 
-            <div id="validateResult" class="result-area" aria-live="polite">
+            <div id="validateResult" class="result-area">
                 <div class="result-placeholder">校验结果会显示在这里…</div>
             </div>
         </section>
@@ -59,7 +175,7 @@
             <div class="input-group">
                 <label for="effectInput">想要达到的效果</label>
                 <textarea id="effectInput" rows="4"
-                    placeholder="例如：给我64个钻石&#10;或：在脚下生成一只苦力怕&#10;或：给附近所有玩家加上速度效果10秒"></textarea>
+                    placeholder="例如：给我64个钻石&#10;或：在脚下生成一只苦力怕"></textarea>
             </div>
 
             <div class="btn-row">
@@ -68,29 +184,29 @@
             </div>
 
             <div class="checkbox-row">
-                <label class="switch" title="联网搜索 Minecraft Wiki 补充信息">
+                <label class="switch" title="联网搜索 Minecraft Wiki">
                     <input type="checkbox" id="useNetSearch" checked>
                     <span>联网搜索补充</span>
                 </label>
                 <span id="netStatus" class="net-status"></span>
             </div>
 
-            <div id="generateResult" class="result-area" aria-live="polite">
+            <div id="generateResult" class="result-area">
                 <div class="result-placeholder">生成的指令会显示在这里…</div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <span>基岩版/网易版指令语法 · 100% 本地校验 · 仅供参考，部分复杂指令请以游戏内实际表现为准</span>
+        <span>© 指令纠错神器 · 基岩版/网易版语法 · 仅供参考，以游戏内实际表现为准</span>
     </footer>
 
-    <!-- Toast 容器 -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="data.js"></script>
     <script src="validator.js"></script>
     <script src="generator.js"></script>
+    <script src="api-client.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

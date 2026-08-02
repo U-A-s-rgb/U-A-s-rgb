@@ -14,8 +14,16 @@ desktop.ini
 *.log
 *.tmp
 
-# 依赖（如果以后加构建工具）
+# 依赖
 node_modules/
+
+# 环境变量（敏感信息！）
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel/
 
 # 本地服务缓存
 __pycache__/
