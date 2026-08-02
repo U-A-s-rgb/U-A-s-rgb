@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的世界网易版指令纠错神器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo">
+            <span class="logo-cube">⬛</span>
+            <h1>指令纠错神器</h1>
+            <span class="logo-sub">我的世界 网易版 · 基岩版语法</span>
+        </div>
+        <div class="header-actions">
+            <button id="themeToggle" class="icon-btn" title="切换主题">🌙</button>
+            <a class="header-link" href="https://mc.163.com/dev/" target="_blank" rel="noopener">网易开发者文档</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 左侧：指令纠错 -->
+        <section class="panel panel-left">
+            <div class="panel-head">
+                <h2><span class="dot dot-red"></span>指令纠错</h2>
+                <span class="panel-desc">把命令方块里报错的指令粘贴进来，本地即时校验</span>
+            </div>
+
+            <div class="input-group">
+                <label for="cmdInput">报错的指令</label>
+                <textarea id="cmdInput" class="mono" rows="4"
+                    placeholder="例如：/give @p diamond 64&#10;或：/summon creeper ~ ~ ~ {powered:1}"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="validateBtn" class="btn btn-primary">🔍 开始纠错</button>
+                <button id="clearBtn" class="btn btn-ghost">清空</button>
+                <label class="switch" title="严格模式：对潜在问题也提示">
+                    <input type="checkbox" id="strictMode">
+                    <span>严格模式</span>
+                </label>
+            </div>
+
+            <div id="validateResult" class="result-area" aria-live="polite">
+                <div class="result-placeholder">校验结果会显示在这里…</div>
+            </div>
+        </section>
+
+        <!-- 右侧：指令生成 -->
+        <section class="panel panel-right">
+            <div class="panel-head">
+                <h2><span class="dot dot-green"></span>指令生成</h2>
+                <span class="panel-desc">描述你想要的效果，自动生成可用指令</span>
+            </div>
+
+            <div class="input-group">
+                <label for="effectInput">想要达到的效果</label>
+                <textarea id="effectInput" rows="4"
+                    placeholder="例如：给我64个钻石&#10;或：在脚下生成一只苦力怕&#10;或：给附近所有玩家加上速度效果10秒"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="generateBtn" class="btn btn-primary">✨ 生成指令</button>
+                <button id="surpriseBtn" class="btn btn-ghost">🎲 随机示例</button>
+            </div>
+
+            <div class="checkbox-row">
+                <label class="switch" title="联网搜索 Minecraft Wiki 补充信息">
+                    <input type="checkbox" id="useNetSearch" checked>
+                    <span>联网搜索补充</span>
+                </label>
+                <span id="netStatus" class="net-status"></span>
+            </div>
+
+            <div id="generateResult" class="result-area" aria-live="polite">
+                <div class="result-placeholder">生成的指令会显示在这里…</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span>基岩版/网易版指令语法 · 100% 本地校验 · 仅供参考，部分复杂指令请以游戏内实际表现为准</span>
+    </footer>
+
+    <!-- Toast 容器 -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="data.js"></script>
+    <script src="validator.js"></script>
+    <script src="generator.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
